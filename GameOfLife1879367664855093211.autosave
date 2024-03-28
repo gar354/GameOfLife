@@ -1,0 +1,33 @@
+boolean[][] tiles; 
+
+
+void setup() {
+  // initialize the buffer
+  tiles = new boolean[50][50];
+  size(500, 500);
+}
+
+void drawTiles() {
+  int rows = tiles.length;
+  for (int row = 0; row < rows; row++) {
+    int cols = tiles[row].length;
+    for (int col = 0; col < cols; col++) {
+      float yScale = height / rows;
+      float xScale = width / cols;
+      if (tiles[row][col]) {
+        rect(row * xScale, col * yScale, xScale, yScale);
+      }
+    }
+  }
+}
+
+
+
+void draw() {
+  if (mousePressed) {
+    int scaledY = (int)Math.floor(mouseX / tiles.length);
+    int scaledX = (int)Math.floor(mouseY / tiles[0].length);
+    tiles[scaledY][scaledX] = true;
+  }
+  drawTiles();
+}

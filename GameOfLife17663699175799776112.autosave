@@ -1,0 +1,26 @@
+boolean[][] tiles; 
+
+
+void setup() {
+  // initialize the buffer
+  tiles = new boolean[50][50];
+}
+
+void drawTiles() {
+  int rows = tiles.length;
+  for (int row = 0; row < rows; row++) {
+    int cols = tiles[row].length;
+    for (int col = 0; col < cols; col++) {
+      float yScale = height / rows;
+      float xScale = width / cols;
+      if (tiles[row][col]) {
+        rect(row * xScale, col * yScale, xScale, yScale);
+      }
+    }
+  }
+}
+
+
+void draw() {
+
+}

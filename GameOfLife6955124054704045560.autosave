@@ -11,8 +11,9 @@ void setup() {
   tiles = new boolean[rows][cols];
   tileBuffer = new boolean[rows][cols];
   xScale = width / cols;
+
   yScale = height / rows;
-  size(1000, 1000);
+  size(600, 600);
   frameRate(30);
 }
 
@@ -60,6 +61,8 @@ boolean playing = false;
 
 void draw() {
   background(0);
+  xScale = width / cols;
+  yScale = height / rows;
 
   if (playing) {
     // if we are playing, copy the buffer to tiles
@@ -69,14 +72,19 @@ void draw() {
       }
     }
   }
+  handleMouse();
   drawTiles();
 }
 
-void mouseDragged() {
+void handleMouse() {
+  if (!mousePressed) {
+    return;
+  }
   int constrainedMouseX = Math.max(0, Math.min(width - 1, mouseX));
   int constrainedMouseY = Math.max(0, Math.min(height - 1, mouseY));
   int scaledY = (int)Math.floor(constrainedMouseY / (yScale));
   int scaledX = (int)Math.floor(constrainedMouseX / (xScale));
+  rect(scaledX * cols, scaledY * rows, 50, 50);
   tiles[scaledY][scaledX] = mouseButton == LEFT;
 }
 
@@ -90,5 +98,6 @@ void keyPressed() {
         tiles[row][col] = false;
       }
     }
+    println("yeay");
   }
 }
