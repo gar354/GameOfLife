@@ -1,6 +1,7 @@
 public boolean[][] tiles;
 public boolean[][] tileBuffer;
 
+// feel free to change these before the program runs
 public static final int NUM_ROWS = 300;
 public static final int NUM_COLS = 300;
 
@@ -8,12 +9,13 @@ public float xScale, yScale = 0;
 public float brushRadius = 1;
 
 public void setup() {
+  // set the size to whatever fits your screen! The game will adapt!
+  size(1200, 1200);
   // initialize the buffers
   tiles = new boolean[NUM_ROWS][NUM_COLS];
   tileBuffer = new boolean[NUM_ROWS][NUM_COLS];
   xScale = (float)width / (float)NUM_COLS;
   yScale = (float)height / (float)NUM_ROWS;
-  size(1200, 1200);
 }
 
 public void drawTiles() {
