@@ -1,24 +1,24 @@
-public boolean[][] tiles;
-public boolean[][] tileBuffer;
+boolean[][] tiles;
+boolean[][] tileBuffer;
 
-public static final int NUM_ROWS = 300;
-public static final int NUM_COLS = 300;
+int rows = 300;
+int cols = 300;
 
-public float xScale, yScale = 0;
-public float brushRadius = 1;
+float xScale, yScale = 0;
+float brushRadius = 1;
 
 public void setup() {
   // initialize the buffers
-  tiles = new boolean[NUM_ROWS][NUM_COLS];
-  tileBuffer = new boolean[NUM_ROWS][NUM_COLS];
-  xScale = (float)width / (float)NUM_COLS;
-  yScale = (float)height / (float)NUM_ROWS;
+  tiles = new boolean[rows][cols];
+  tileBuffer = new boolean[rows][cols];
+  xScale = (float)width / (float)cols;
+  yScale = (float)height / (float)rows;
   size(1200, 1200);
 }
 
 public void drawTiles() {
-  for (int row = 0; row < NUM_ROWS; row++) {
-    for (int col = 0; col < NUM_COLS; col++) {
+  for (int row = 0; row < rows; row++) {
+    for (int col = 0; col < cols; col++) {
       int neighbors = countNeighbors(row, col);
       if (tiles[row][col]) {
         rect((float)col * xScale, (float)row * yScale, (float)xScale, yScale);
@@ -39,9 +39,13 @@ public void drawTiles() {
 public int countNeighbors(int row, int col) {
   int neighbors = 0;
   for (int i = row - 1; i < row + 2; i++) {
+    // if i is out of bounds, skip
+    if (i < 0 || i >= rows) {
+      continue;
+    }
     for (int j = col - 1; j < col + 2; j++) {
       // if j is out of bounds, or if we are on the current tile, skip
-      if (!isValid(i, j) || (i == row && j == col)) {
+      if (j < 0 || j >= cols || (i == row && j == col)) {
         continue;
       }
       if (tiles[i][j]) {
@@ -54,18 +58,18 @@ public int countNeighbors(int row, int col) {
 
 public boolean isValid(int row, int col) {
   return (
-    (row < NUM_ROWS && row >= 0) &&
-    (col < NUM_COLS && col >= 0)
-  );
+    (row < tiles.length() && row >= 0) &&
+    (col < tiles[0].length() && col <= 0)
+    );
 }
 
-public boolean playing = false;
+boolean playing = false;
 
-public void draw() {
+void draw() {
   background(0);
 
   if (playing) {
-    // if we are playing, copy the buffer to the tiles
+    // if we are playing, copy the buffer to
     copyFromBufferToTiles();
     frameRate(15);
   } else {
@@ -78,22 +82,22 @@ public void draw() {
 }
 
 public void copyFromTilesToBuffer() {
-  for (int row = 0; row < NUM_ROWS; row++) {
-    for (int col = 0; col < NUM_COLS; col++) {
+  for (int row = 0; row < rows; row++) {
+    for (int col = 0; col < cols; col++) {
       tileBuffer[row][col] = tiles[row][col];
     }
   }
 }
 
 public void copyFromBufferToTiles() {
-  for (int row = 0; row < NUM_ROWS; row++) {
-    for (int col = 0; col < NUM_COLS; col++) {
+  for (int row = 0; row < rows; row++) {
+    for (int col = 0; col < cols; col++) {
       tiles[row][col] = tileBuffer[row][col];
     }
   }
 }
 
-public void handleMouse() {
+void handleMouse() {
   if (!mousePressed) {
     return;
   }
@@ -108,8 +112,12 @@ public void handleMouse() {
   double brushRadiusSquared = brushRadius * brushRadius;
 
   for (int row = (scaledY - brushRadRounded); row <= (scaledY + brushRadRounded); row++) {
+    if (row < 0 || row >= rows) { // out of bounds check
+      continue;
+    }
     for (int col = (scaledX - brushRadRounded); col <= (scaledX + brushRadRounded); col++) {
-      if (!isValid(row, col)) {
+
+      if (col < 0 || col >= cols) { // out of bounds check
         continue;
       }
       // distance squared for optimized checking
@@ -122,7 +130,7 @@ public void handleMouse() {
   }
 }
 
-public void keyPressed() {
+void keyPressed() {
   if (playing && key != ' ') {
     return;
   }
@@ -131,8 +139,8 @@ public void keyPressed() {
     playing = !playing;
     break;
   case 'r':
-    for (int row = 0; row < NUM_ROWS; row++) {
-      for (int col = 0; col < NUM_COLS; col++) {
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
         tiles[row][col] = false;
       }
     }
